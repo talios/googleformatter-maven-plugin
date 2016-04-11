@@ -7,6 +7,7 @@
   <packaging>maven-plugin</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>googleformatter-maven-plugin Maven Mojo</name>
+  <description>Apache Maven Mojo for reformatting code using the Google Code Formatter</description>
   <url>http://maven.apache.org</url>
   <prerequisites>
     <maven>3.3</maven>
