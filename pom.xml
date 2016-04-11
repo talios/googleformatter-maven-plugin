@@ -5,7 +5,7 @@
   <groupId>com.theoryinpractise</groupId>
   <artifactId>googleformatter-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>googleformatter-maven-plugin Maven Mojo</name>
   <description>Apache Maven Mojo for reformatting code using the Google Code Formatter</description>
   <url>http://maven.apache.org</url>
@@ -16,7 +16,7 @@
     <connection>scm:git:git@github.com:talios/clojure-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:talios/clojure-maven-plugin.git</developerConnection>
     <url>http://github.com/talios/clojure-maven-plugin</url>
-    <tag>HEAD</tag>
+    <tag>googleformatter-maven-plugin-1.0</tag>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
