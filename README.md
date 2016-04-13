@@ -20,6 +20,9 @@ original and only rewritten if they no longer match.
           <configuration>
             <includeStale>false</includeStale>
             <maxWidth>160</maxWidth>
+            <sortImports>NO</sortImports>
+            <javadocFormatter>NONE</javadocFormatter>
+            <style>GOOGLE</style>
           </configuration>
           <goals>
             <goal>format</goal>
