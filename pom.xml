@@ -1,11 +1,9 @@
-<project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.theoryinpractise</groupId>
   <artifactId>googleformatter-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <name>googleformatter-maven-plugin Maven Mojo</name>
   <description>Apache Maven Mojo for reformatting code using the Google Code Formatter</description>
   <url>http://maven.apache.org</url>
@@ -16,7 +14,7 @@
     <connection>scm:git:git@github.com:talios/clojure-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:talios/clojure-maven-plugin.git</developerConnection>
     <url>http://github.com/talios/clojure-maven-plugin</url>
-    <tag>HEAD</tag>
+    <tag>googleformatter-maven-plugin-1.0.1</tag>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
