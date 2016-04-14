@@ -121,14 +121,18 @@ public class GoogleFormatterMojo extends AbstractMojo {
   }
 
   private Set<File> findFilesToReformat(File sourceDirectory, File outputDirectory) throws MojoExecutionException {
-    try {
-      SourceInclusionScanner scanner = getSourceInclusionScanner(includeStale);
-      scanner.addSourceMapping(new SuffixMapping(".java", new HashSet(Arrays.asList(".java", ".class"))));
-      Set<File> sourceFiles = scanner.getIncludedSources(sourceDirectory, outputDirectory);
-      getLog().info("Found " + sourceFiles.size() + " uncompiled/modified files in " + sourceDirectory.getPath() + " to reformat.");
-      return sourceFiles;
-    } catch (InclusionScanException e) {
-      throw new MojoExecutionException("Error scanning source path: \'" + sourceDirectory.getPath() + "\' " + "for  files to reformat.", e);
+    if (sourceDirectory.exists()) {
+      try {
+        SourceInclusionScanner scanner = getSourceInclusionScanner(includeStale);
+        scanner.addSourceMapping(new SuffixMapping(".java", new HashSet(Arrays.asList(".java", ".class"))));
+        Set<File> sourceFiles = scanner.getIncludedSources(sourceDirectory, outputDirectory);
+        getLog().info("Found " + sourceFiles.size() + " uncompiled/modified files in " + sourceDirectory.getPath() + " to reformat.");
+        return sourceFiles;
+      } catch (InclusionScanException e) {
+        throw new MojoExecutionException("Error scanning source path: \'" + sourceDirectory.getPath() + "\' " + "for  files to reformat.", e);
+      }
+    } else {
+      return Collections.emptySet();
     }
   }
 
