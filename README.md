@@ -13,7 +13,7 @@ original and only rewritten if they no longer match.
     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>googleformatter-maven-plugin</artifactId>
-      <version>1.0</version>
+      <version>1.0.3</version>
       <executions>
         <execution>
           <id>reformat-sources</id>
@@ -23,6 +23,7 @@ original and only rewritten if they no longer match.
             <sortImports>NO</sortImports>
             <javadocFormatter>NONE</javadocFormatter>
             <style>GOOGLE</style>
+            <skip>false</skip>
           </configuration>
           <goals>
             <goal>format</goal>
@@ -31,3 +32,11 @@ original and only rewritten if they no longer match.
         </execution>
       </executions>
     </plugin>
+
+# Changes
+
+* 1.0.3 - Fri 15 Apr 2016 20:45:58 NZST
+  * Added `<skip>` ( and `-Dformatter.skip` ) configuration setting to skip reformatting code.
+
+* 1.0.2 - Thu 14 Apr 2016 12:58:00 NZST
+  * Handle missing test directories.

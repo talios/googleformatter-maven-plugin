@@ -67,6 +67,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(required = true, defaultValue = "100")
   protected int maxWidth;
 
+  @Parameter(required = true, defaultValue = "false", property = "format.skip")
+  protected boolean skip;
+
   public static class JavaFormatterOptionsWithCustomLength extends JavaFormatterOptions {
     int maxLineLength;
 
@@ -88,8 +91,8 @@ public class GoogleFormatterMojo extends AbstractMojo {
       return;
     }
 
-    if (!sourceDirectory.exists()) {
-      getLog().info("Source directory does not exist, skipping reformat");
+    if (skip) {
+      getLog().info("Skipping source reformatting due to plugin configuration.");
       return;
     }
 
@@ -132,6 +135,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
         throw new MojoExecutionException("Error scanning source path: \'" + sourceDirectory.getPath() + "\' " + "for  files to reformat.", e);
       }
     } else {
+      getLog().info(String.format("Directory %s does not exist, skipping file collection.", sourceDirectory.getPath()));
       return Collections.emptySet();
     }
   }
