@@ -52,22 +52,22 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(required = true, readonly = true, property = "project.build.testOutputDirectory")
   protected File testOutputDirectory;
 
-  @Parameter(required = true, defaultValue = "false")
+  @Parameter(defaultValue = "false")
   protected boolean includeStale;
 
-  @Parameter(required = true, defaultValue = "NO")
+  @Parameter(defaultValue = "ALSO")
   protected SortImports sortImports;
 
-  @Parameter(required = true, defaultValue = "NONE")
+  @Parameter(defaultValue = "NONE")
   protected JavadocFormatter javadocFormatter;
 
-  @Parameter(required = true, defaultValue = "GOOGLE")
+  @Parameter(defaultValue = "GOOGLE")
   protected Style style;
 
-  @Parameter(required = true, defaultValue = "100")
+  @Parameter(defaultValue = "100")
   protected int maxWidth;
 
-  @Parameter(required = true, defaultValue = "false", property = "format.skip")
+  @Parameter(defaultValue = "false", property = "formatter.skip")
   protected boolean skip;
 
   public static class JavaFormatterOptionsWithCustomLength extends JavaFormatterOptions {

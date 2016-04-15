@@ -35,8 +35,10 @@ original and only rewritten if they no longer match.
 
 # Changes
 
+
+* 1.0.4 - Fri 15 Apr 2016 22:13:39 NZST
+  * Dropped required flag on configuration values.
 * 1.0.3 - Fri 15 Apr 2016 20:45:58 NZST
   * Added `<skip>` ( and `-Dformatter.skip` ) configuration setting to skip reformatting code.
-
 * 1.0.2 - Thu 14 Apr 2016 12:58:00 NZST
   * Handle missing test directories.
