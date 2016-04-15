@@ -2,7 +2,7 @@
 
 A simple [Apache Maven](http://maven.apache.org) plugin to reformat
 a projects source/test-sources using the [google-java-format](https://github.com/google/google-java-format)
-project.
+project to conform with the [Google Code Style Guide](https://google.github.io/styleguide/javaguide.html).
 
 By default the plugin will only process _stale_ source files ( comparing
 against their respective `.class` files existence/timestamp ).
