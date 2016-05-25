@@ -13,7 +13,7 @@ original and only rewritten if they no longer match.
     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>googleformatter-maven-plugin</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.5</version>
       <executions>
         <execution>
           <id>reformat-sources</id>
@@ -35,7 +35,8 @@ original and only rewritten if they no longer match.
 
 # Changes
 
-
+* 1.0.5 - Thu 26 May 2016 11:35:33 NZST
+  * Exposed formatter.length as a property
 * 1.0.4 - Fri 15 Apr 2016 22:13:39 NZST
   * Dropped required flag on configuration values.
 * 1.0.3 - Fri 15 Apr 2016 20:45:58 NZST
