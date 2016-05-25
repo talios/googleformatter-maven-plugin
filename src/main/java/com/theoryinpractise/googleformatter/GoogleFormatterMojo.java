@@ -64,7 +64,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(defaultValue = "GOOGLE")
   protected Style style;
 
-  @Parameter(defaultValue = "100")
+  @Parameter(defaultValue = "100", property = "formatter.length")
   protected int maxWidth;
 
   @Parameter(defaultValue = "false", property = "formatter.skip")
@@ -143,5 +143,4 @@ public class GoogleFormatterMojo extends AbstractMojo {
   protected SourceInclusionScanner getSourceInclusionScanner(boolean includeStale) {
     return includeStale ? new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.EMPTY_SET) : new StaleSourceScanner(1024);
   }
-
 }
