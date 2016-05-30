@@ -23,6 +23,7 @@ original and only rewritten if they no longer match.
             <sortImports>NO</sortImports>
             <javadocFormatter>NONE</javadocFormatter>
             <style>GOOGLE</style>
+            <filterModified>true</filterModified>
             <skip>false</skip>
           </configuration>
           <goals>
@@ -35,8 +36,11 @@ original and only rewritten if they no longer match.
 
 # Changes
 
+* 1.0.6 - Tue 31 May 2016 10:51:16 NZST
+  * Exposed `formatter.modified` to reformat only changed SCM files.
+  * Requires Java 8 to run now.
 * 1.0.5 - Thu 26 May 2016 11:35:33 NZST
-  * Exposed formatter.length as a property
+  * Exposed `formatter.length` as a property
 * 1.0.4 - Fri 15 Apr 2016 22:13:39 NZST
   * Dropped required flag on configuration values.
 * 1.0.3 - Fri 15 Apr 2016 20:45:58 NZST
