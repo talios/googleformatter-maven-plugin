@@ -1,5 +1,6 @@
 package com.theoryinpractise.googleformatter;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.CharStreams;
@@ -8,10 +9,15 @@ import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.scm.ScmException;
+import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.manager.ScmManager;
+import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.compiler.util.scan.InclusionScanException;
 import org.codehaus.plexus.compiler.util.scan.SimpleSourceInclusionScanner;
 import org.codehaus.plexus.compiler.util.scan.SourceInclusionScanner;
@@ -25,7 +31,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.google.googlejavaformat.java.JavaFormatterOptions.JavadocFormatter;
 import static com.google.googlejavaformat.java.JavaFormatterOptions.SortImports;
@@ -36,6 +44,8 @@ import static com.google.googlejavaformat.java.JavaFormatterOptions.Style;
  */
 @Mojo(name = "format", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class GoogleFormatterMojo extends AbstractMojo {
+
+  @Component ScmManager scmManager;
 
   @Parameter(required = true, readonly = true, property = "project")
   protected MavenProject project;
@@ -70,6 +80,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(defaultValue = "false", property = "formatter.skip")
   protected boolean skip;
 
+  @Parameter(defaultValue = "false", property = "formatter.modified")
+  protected boolean filterModified;
+
   public static class JavaFormatterOptionsWithCustomLength extends JavaFormatterOptions {
     int maxLineLength;
 
@@ -102,7 +115,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
       sourceFiles.addAll(findFilesToReformat(sourceDirectory, outputDirectory));
       sourceFiles.addAll(findFilesToReformat(testSourceDirectory, testOutputDirectory));
 
-      for (File file : sourceFiles) {
+      Set<File> sourceFilesToProcess = filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
+
+      for (File file : sourceFilesToProcess) {
         String source = CharStreams.toString(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 
         JavaFormatterOptions options = new JavaFormatterOptionsWithCustomLength(javadocFormatter, style, sortImports, maxWidth);
@@ -120,6 +135,26 @@ public class GoogleFormatterMojo extends AbstractMojo {
       }
     } catch (Exception e) {
       throw new MojoExecutionException(e.getMessage());
+    }
+  }
+
+  private Set<File> filterUnchangedFiles(Set<File> originalFiles) throws MojoExecutionException {
+    try {
+      String connectionUrl = MoreObjects.firstNonNull(project.getScm().getConnection(), project.getScm().getDeveloperConnection());
+      ScmRepository repository = scmManager.makeScmRepository(connectionUrl);
+      ScmFileSet scmFileSet = new ScmFileSet(project.getBasedir());
+      final List<String> changedFiles =
+          scmManager
+              .status(repository, scmFileSet)
+              .getChangedFiles()
+              .stream()
+              .map(f -> String.format("%s/%s", project.getBasedir().getAbsoluteFile().getPath(), f.getPath()))
+              .collect(Collectors.toList());
+
+      return originalFiles.stream().filter(f -> changedFiles.contains(f.getPath())).collect(Collectors.toSet());
+
+    } catch (ScmException e) {
+      throw new MojoExecutionException(e.getMessage(), e);
     }
   }
 
