@@ -35,16 +35,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.google.googlejavaformat.java.JavaFormatterOptions.JavadocFormatter;
-import static com.google.googlejavaformat.java.JavaFormatterOptions.SortImports;
 import static com.google.googlejavaformat.java.JavaFormatterOptions.Style;
+import static com.theoryinpractise.googleformatter.Constants.DIRECTORY_MISSING;
 
-/**
- * Reformat all source files using the Google Code Formatter
- */
+/** Reformat all source files using the Google Code Formatter */
 @Mojo(name = "format", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class GoogleFormatterMojo extends AbstractMojo {
 
+  public static final SuffixMapping SOURCE_MAPPING =
+      new SuffixMapping(".java", new HashSet<>(Arrays.asList(".java", ".class")));
   @Component ScmManager scmManager;
 
   @Parameter(required = true, readonly = true, property = "project")
@@ -65,37 +64,14 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(defaultValue = "false")
   protected boolean includeStale;
 
-  @Parameter(defaultValue = "ALSO")
-  protected SortImports sortImports;
-
-  @Parameter(defaultValue = "NONE")
-  protected JavadocFormatter javadocFormatter;
-
   @Parameter(defaultValue = "GOOGLE")
   protected Style style;
-
-  @Parameter(defaultValue = "100", property = "formatter.length")
-  protected int maxWidth;
 
   @Parameter(defaultValue = "false", property = "formatter.skip")
   protected boolean skip;
 
   @Parameter(defaultValue = "false", property = "formatter.modified")
   protected boolean filterModified;
-
-  public static class JavaFormatterOptionsWithCustomLength extends JavaFormatterOptions {
-    int maxLineLength;
-
-    public JavaFormatterOptionsWithCustomLength(JavadocFormatter javadocFormatter, Style style, SortImports sortImports, int maxLineLength) {
-      super(javadocFormatter, style, sortImports);
-      this.maxLineLength = maxLineLength;
-    }
-
-    @Override
-    public int maxLineLength() {
-      return maxLineLength;
-    }
-  }
 
   public void execute() throws MojoExecutionException {
 
@@ -115,12 +91,16 @@ public class GoogleFormatterMojo extends AbstractMojo {
       sourceFiles.addAll(findFilesToReformat(sourceDirectory, outputDirectory));
       sourceFiles.addAll(findFilesToReformat(testSourceDirectory, testOutputDirectory));
 
-      Set<File> sourceFilesToProcess = filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
+      Set<File> sourceFilesToProcess =
+          filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
+
+      JavaFormatterOptions options = JavaFormatterOptions.builder().style(style).build();
 
       for (File file : sourceFilesToProcess) {
-        String source = CharStreams.toString(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        String source =
+            CharStreams.toString(
+                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 
-        JavaFormatterOptions options = new JavaFormatterOptionsWithCustomLength(javadocFormatter, style, sortImports, maxWidth);
         Formatter formatter = new Formatter(options);
         String formattedSource = formatter.formatSource(source);
 
@@ -130,7 +110,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
         if (!formattedHash.equals(sourceHash)) {
           // overwrite existing file
           Files.write(formattedSource, file, StandardCharsets.UTF_8);
-          getLog().info("Reformatted file " + file.getPath());
+          getLog().info(String.format("Reformatted file %s", file.getPath()));
         }
       }
     } catch (Exception e) {
@@ -140,42 +120,55 @@ public class GoogleFormatterMojo extends AbstractMojo {
 
   private Set<File> filterUnchangedFiles(Set<File> originalFiles) throws MojoExecutionException {
     try {
-      String connectionUrl = MoreObjects.firstNonNull(project.getScm().getConnection(), project.getScm().getDeveloperConnection());
+      String connectionUrl =
+          MoreObjects.firstNonNull(
+              project.getScm().getConnection(), project.getScm().getDeveloperConnection());
       ScmRepository repository = scmManager.makeScmRepository(connectionUrl);
       ScmFileSet scmFileSet = new ScmFileSet(project.getBasedir());
-      final List<String> changedFiles =
+      String basePath = project.getBasedir().getAbsoluteFile().getPath();
+      List<String> changedFiles =
           scmManager
               .status(repository, scmFileSet)
               .getChangedFiles()
               .stream()
-              .map(f -> String.format("%s/%s", project.getBasedir().getAbsoluteFile().getPath(), f.getPath()))
+              .map(f -> String.format("%s/%s", basePath, f.getPath()))
               .collect(Collectors.toList());
 
-      return originalFiles.stream().filter(f -> changedFiles.contains(f.getPath())).collect(Collectors.toSet());
+      return originalFiles
+          .stream()
+          .filter(f -> changedFiles.contains(f.getPath()))
+          .collect(Collectors.toSet());
 
     } catch (ScmException e) {
       throw new MojoExecutionException(e.getMessage(), e);
     }
   }
 
-  private Set<File> findFilesToReformat(File sourceDirectory, File outputDirectory) throws MojoExecutionException {
+  private Set<File> findFilesToReformat(File sourceDirectory, File outputDirectory)
+      throws MojoExecutionException {
     if (sourceDirectory.exists()) {
       try {
         SourceInclusionScanner scanner = getSourceInclusionScanner(includeStale);
-        scanner.addSourceMapping(new SuffixMapping(".java", new HashSet(Arrays.asList(".java", ".class"))));
+        scanner.addSourceMapping(SOURCE_MAPPING);
         Set<File> sourceFiles = scanner.getIncludedSources(sourceDirectory, outputDirectory);
-        getLog().info("Found " + sourceFiles.size() + " uncompiled/modified files in " + sourceDirectory.getPath() + " to reformat.");
+        getLog()
+            .info(
+                String.format(
+                    Constants.FOUND_UNCOMPILED, sourceFiles.size(), sourceDirectory.getPath()));
         return sourceFiles;
       } catch (InclusionScanException e) {
-        throw new MojoExecutionException("Error scanning source path: \'" + sourceDirectory.getPath() + "\' " + "for  files to reformat.", e);
+        throw new MojoExecutionException(
+            String.format(Constants.ERROR_SCANNING_PATH, sourceDirectory.getPath()), e);
       }
     } else {
-      getLog().info(String.format("Directory %s does not exist, skipping file collection.", sourceDirectory.getPath()));
+      getLog().info(String.format(DIRECTORY_MISSING, sourceDirectory.getPath()));
       return Collections.emptySet();
     }
   }
 
   protected SourceInclusionScanner getSourceInclusionScanner(boolean includeStale) {
-    return includeStale ? new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.EMPTY_SET) : new StaleSourceScanner(1024);
+    return includeStale
+        ? new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.emptySet())
+        : new StaleSourceScanner(1024);
   }
 }
