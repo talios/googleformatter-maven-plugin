@@ -44,7 +44,6 @@ public class GoogleFormatterMojo extends AbstractMojo {
 
   public static final SuffixMapping SOURCE_MAPPING =
       new SuffixMapping(".java", new HashSet<>(Arrays.asList(".java", ".class")));
-
   @Component ScmManager scmManager;
 
   @Parameter(required = true, readonly = true, property = "project")
