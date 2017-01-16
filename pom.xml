@@ -164,11 +164,7 @@
             <plugin>
                 <groupId>com.theoryinpractise</groupId>
                 <artifactId>googleformatter-maven-plugin</artifactId>
-                <version>1.0.6</version>
-                <configuration>
-                    <maxWidth>160</maxWidth>
-                    <javadocFormatter>ECLIPSE</javadocFormatter>
-                </configuration>
+                <version>1.2.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
