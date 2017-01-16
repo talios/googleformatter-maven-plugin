@@ -42,8 +42,7 @@ import static com.theoryinpractise.googleformatter.Constants.DIRECTORY_MISSING;
 @Mojo(name = "format", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class GoogleFormatterMojo extends AbstractMojo {
 
-  public static final SuffixMapping SOURCE_MAPPING =
-      new SuffixMapping(".java", new HashSet<>(Arrays.asList(".java", ".class")));
+  public static final SuffixMapping SOURCE_MAPPING = new SuffixMapping(".java", new HashSet<>(Arrays.asList(".java", ".class")));
   @Component ScmManager scmManager;
 
   @Parameter(required = true, readonly = true, property = "project")
@@ -91,15 +90,12 @@ public class GoogleFormatterMojo extends AbstractMojo {
       sourceFiles.addAll(findFilesToReformat(sourceDirectory, outputDirectory));
       sourceFiles.addAll(findFilesToReformat(testSourceDirectory, testOutputDirectory));
 
-      Set<File> sourceFilesToProcess =
-          filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
+      Set<File> sourceFilesToProcess = filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
 
       JavaFormatterOptions options = JavaFormatterOptions.builder().style(style).build();
 
       for (File file : sourceFilesToProcess) {
-        String source =
-            CharStreams.toString(
-                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        String source = CharStreams.toString(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 
         Formatter formatter = new Formatter(options);
         String formattedSource = formatter.formatSource(source);
@@ -120,9 +116,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
 
   private Set<File> filterUnchangedFiles(Set<File> originalFiles) throws MojoExecutionException {
     try {
-      String connectionUrl =
-          MoreObjects.firstNonNull(
-              project.getScm().getConnection(), project.getScm().getDeveloperConnection());
+      String connectionUrl = MoreObjects.firstNonNull(project.getScm().getConnection(), project.getScm().getDeveloperConnection());
       ScmRepository repository = scmManager.makeScmRepository(connectionUrl);
       ScmFileSet scmFileSet = new ScmFileSet(project.getBasedir());
       String basePath = project.getBasedir().getAbsoluteFile().getPath();
@@ -134,31 +128,23 @@ public class GoogleFormatterMojo extends AbstractMojo {
               .map(f -> String.format("%s/%s", basePath, f.getPath()))
               .collect(Collectors.toList());
 
-      return originalFiles
-          .stream()
-          .filter(f -> changedFiles.contains(f.getPath()))
-          .collect(Collectors.toSet());
+      return originalFiles.stream().filter(f -> changedFiles.contains(f.getPath())).collect(Collectors.toSet());
 
     } catch (ScmException e) {
       throw new MojoExecutionException(e.getMessage(), e);
     }
   }
 
-  private Set<File> findFilesToReformat(File sourceDirectory, File outputDirectory)
-      throws MojoExecutionException {
+  private Set<File> findFilesToReformat(File sourceDirectory, File outputDirectory) throws MojoExecutionException {
     if (sourceDirectory.exists()) {
       try {
         SourceInclusionScanner scanner = getSourceInclusionScanner(includeStale);
         scanner.addSourceMapping(SOURCE_MAPPING);
         Set<File> sourceFiles = scanner.getIncludedSources(sourceDirectory, outputDirectory);
-        getLog()
-            .info(
-                String.format(
-                    Constants.FOUND_UNCOMPILED, sourceFiles.size(), sourceDirectory.getPath()));
+        getLog().info(String.format(Constants.FOUND_UNCOMPILED, sourceFiles.size(), sourceDirectory.getPath()));
         return sourceFiles;
       } catch (InclusionScanException e) {
-        throw new MojoExecutionException(
-            String.format(Constants.ERROR_SCANNING_PATH, sourceDirectory.getPath()), e);
+        throw new MojoExecutionException(String.format(Constants.ERROR_SCANNING_PATH, sourceDirectory.getPath()), e);
       }
     } else {
       getLog().info(String.format(DIRECTORY_MISSING, sourceDirectory.getPath()));
@@ -167,8 +153,6 @@ public class GoogleFormatterMojo extends AbstractMojo {
   }
 
   protected SourceInclusionScanner getSourceInclusionScanner(boolean includeStale) {
-    return includeStale
-        ? new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.emptySet())
-        : new StaleSourceScanner(1024);
+    return includeStale ? new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.emptySet()) : new StaleSourceScanner(1024);
   }
 }
