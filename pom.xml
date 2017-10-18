@@ -4,7 +4,7 @@
 
     <groupId>com.theoryinpractise</groupId>
     <artifactId>googleformatter-maven-plugin</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.5.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>googleformatter-maven-plugin Maven Mojo</name>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>com.google.googlejavaformat</groupId>
             <artifactId>google-java-format</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>com.google.errorprone</groupId>
