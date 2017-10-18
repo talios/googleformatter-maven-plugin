@@ -4,7 +4,7 @@
 
     <groupId>com.theoryinpractise</groupId>
     <artifactId>googleformatter-maven-plugin</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.1</version>
     <packaging>maven-plugin</packaging>
 
     <name>googleformatter-maven-plugin Maven Mojo</name>
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:talios/clojure-maven-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:talios/clojure-maven-plugin.git</developerConnection>
         <url>http://github.com/talios/clojure-maven-plugin</url>
-        <tag>HEAD</tag>
+        <tag>googleformatter-maven-plugin-1.5.1</tag>
     </scm>
     <distributionManagement>
         <repository>
