@@ -19,9 +19,6 @@ original and only rewritten if they no longer match.
           <id>reformat-sources</id>
           <configuration>
             <includeStale>false</includeStale>
-            <maxWidth>160</maxWidth>
-            <sortImports>NO</sortImports>
-            <javadocFormatter>NONE</javadocFormatter>
             <style>GOOGLE</style>
             <filterModified>true</filterModified>
             <skip>false</skip>
