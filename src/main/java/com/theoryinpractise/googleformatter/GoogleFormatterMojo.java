@@ -7,6 +7,7 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
@@ -45,6 +46,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
   public static final SuffixMapping SOURCE_MAPPING =
       new SuffixMapping(".java", new HashSet<>(Arrays.asList(".java", ".class")));
   @Component ScmManager scmManager;
+
+  @Parameter(required = true, readonly = true, property = "session")
+  protected MavenSession session;
 
   @Parameter(required = true, readonly = true, property = "project")
   protected MavenProject project;
@@ -119,13 +123,14 @@ public class GoogleFormatterMojo extends AbstractMojo {
   }
 
   private Set<File> filterUnchangedFiles(Set<File> originalFiles) throws MojoExecutionException {
+    MavenProject topLevelProject = session.getTopLevelProject();
     try {
       String connectionUrl =
           MoreObjects.firstNonNull(
-              project.getScm().getConnection(), project.getScm().getDeveloperConnection());
+              topLevelProject.getScm().getConnection(), topLevelProject.getScm().getDeveloperConnection());
       ScmRepository repository = scmManager.makeScmRepository(connectionUrl);
-      ScmFileSet scmFileSet = new ScmFileSet(project.getBasedir());
-      String basePath = project.getBasedir().getAbsoluteFile().getPath();
+      ScmFileSet scmFileSet = new ScmFileSet(topLevelProject.getBasedir());
+      String basePath = topLevelProject.getBasedir().getAbsoluteFile().getPath();
       List<String> changedFiles =
           scmManager
               .status(repository, scmFileSet)
