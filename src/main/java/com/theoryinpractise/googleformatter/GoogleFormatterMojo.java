@@ -127,7 +127,8 @@ public class GoogleFormatterMojo extends AbstractMojo {
     try {
       String connectionUrl =
           MoreObjects.firstNonNull(
-              topLevelProject.getScm().getConnection(), topLevelProject.getScm().getDeveloperConnection());
+              topLevelProject.getScm().getConnection(),
+              topLevelProject.getScm().getDeveloperConnection());
       ScmRepository repository = scmManager.makeScmRepository(connectionUrl);
       ScmFileSet scmFileSet = new ScmFileSet(topLevelProject.getBasedir());
       String basePath = topLevelProject.getBasedir().getAbsoluteFile().getPath();
