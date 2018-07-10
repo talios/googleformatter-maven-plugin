@@ -77,6 +77,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(defaultValue = "false", property = "formatter.modified")
   protected boolean filterModified;
 
+  @Parameter(defaultValue = "false", property = "formatter.fixImports")
+  protected boolean fixImports;
+
   public void execute() throws MojoExecutionException {
 
     if ("pom".equals(project.getPackaging())) {
@@ -106,7 +109,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
                 new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 
         Formatter formatter = new Formatter(options);
-        String formattedSource = formatter.formatSource(source);
+        String formattedSource = fixImports
+          ? formatter.formatSource(source)
+          : formatter.formatSourceAndFixImports(source);
 
         HashCode sourceHash = Hashing.sha1().hashString(source, StandardCharsets.UTF_8);
         HashCode formattedHash = Hashing.sha1().hashString(formattedSource, StandardCharsets.UTF_8);
