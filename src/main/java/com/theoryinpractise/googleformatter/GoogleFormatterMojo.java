@@ -110,8 +110,8 @@ public class GoogleFormatterMojo extends AbstractMojo {
 
         Formatter formatter = new Formatter(options);
         String formattedSource = fixImports
-          ? formatter.formatSource(source)
-          : formatter.formatSourceAndFixImports(source);
+          ? formatter.formatSourceAndFixImports(source)
+          : formatter.formatSource(source);
 
         HashCode sourceHash = Hashing.sha1().hashString(source, StandardCharsets.UTF_8);
         HashCode formattedHash = Hashing.sha1().hashString(formattedSource, StandardCharsets.UTF_8);
