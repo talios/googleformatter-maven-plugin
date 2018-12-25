@@ -164,7 +164,7 @@
             <plugin>
                 <groupId>com.theoryinpractise</groupId>
                 <artifactId>googleformatter-maven-plugin</artifactId>
-                <version>1.6.4</version>
+                <version>1.6.5</version>
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
