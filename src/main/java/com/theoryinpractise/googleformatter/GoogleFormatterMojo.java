@@ -109,9 +109,10 @@ public class GoogleFormatterMojo extends AbstractMojo {
                 new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 
         Formatter formatter = new Formatter(options);
-        String formattedSource = fixImports
-          ? formatter.formatSourceAndFixImports(source)
-          : formatter.formatSource(source);
+        String formattedSource =
+            fixImports
+                ? formatter.formatSourceAndFixImports(source)
+                : formatter.formatSource(source);
 
         HashCode sourceHash = Hashing.sha1().hashString(source, StandardCharsets.UTF_8);
         HashCode formattedHash = Hashing.sha1().hashString(formattedSource, StandardCharsets.UTF_8);
