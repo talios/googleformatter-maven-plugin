@@ -13,15 +13,16 @@ original and only rewritten if they no longer match.
     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>googleformatter-maven-plugin</artifactId>
-      <version>1.0.5</version>
+      <version>1.6.4</version>
       <executions>
         <execution>
           <id>reformat-sources</id>
           <configuration>
             <includeStale>false</includeStale>
             <style>GOOGLE</style>
-            <filterModified>true</filterModified>
+            <filterModified>false</filterModified>
             <skip>false</skip>
+            <fixImports>false</fixImports>
           </configuration>
           <goals>
             <goal>format</goal>
