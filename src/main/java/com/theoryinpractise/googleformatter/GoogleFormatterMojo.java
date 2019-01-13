@@ -4,7 +4,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.CharStreams;
-import com.google.common.io.Files;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.JavaFormatterOptions;
 import org.apache.maven.execution.MavenSession;
@@ -29,6 +28,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -80,6 +81,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(defaultValue = "false", property = "formatter.fixImports")
   protected boolean fixImports;
 
+  @Override
   public void execute() throws MojoExecutionException {
 
     if ("pom".equals(project.getPackaging())) {
@@ -119,7 +121,11 @@ public class GoogleFormatterMojo extends AbstractMojo {
 
         if (!formattedHash.equals(sourceHash)) {
           // overwrite existing file
-          Files.write(formattedSource, file, StandardCharsets.UTF_8);
+          Files.write(
+              file.toPath(),
+              formattedSource.getBytes(StandardCharsets.UTF_8),
+              StandardOpenOption.WRITE);
+
           getLog().info(String.format("Reformatted file %s", file.getPath()));
         }
       }
@@ -139,15 +145,11 @@ public class GoogleFormatterMojo extends AbstractMojo {
       ScmFileSet scmFileSet = new ScmFileSet(topLevelProject.getBasedir());
       String basePath = topLevelProject.getBasedir().getAbsoluteFile().getPath();
       List<String> changedFiles =
-          scmManager
-              .status(repository, scmFileSet)
-              .getChangedFiles()
-              .stream()
+          scmManager.status(repository, scmFileSet).getChangedFiles().stream()
               .map(f -> String.format("%s/%s", basePath, f.getPath()))
               .collect(Collectors.toList());
 
-      return originalFiles
-          .stream()
+      return originalFiles.stream()
           .filter(f -> changedFiles.contains(f.getPath()))
           .collect(Collectors.toSet());
 

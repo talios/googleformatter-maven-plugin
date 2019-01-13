@@ -4,7 +4,7 @@
 
     <groupId>com.theoryinpractise</groupId>
     <artifactId>googleformatter-maven-plugin</artifactId>
-    <version>1.6.6-SNAPSHOT</version>
+    <version>1.7.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>googleformatter-maven-plugin Maven Mojo</name>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>com.google.googlejavaformat</groupId>
             <artifactId>google-java-format</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>com.google.errorprone</groupId>
@@ -133,11 +133,76 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
+                <!-- use error prone: http://errorprone.info/docs/installation -->
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                <compilerId>javac-with-errorprone</compilerId>
+                <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                <compilerVersion>1.8</compilerVersion>
+                <source>1.8</source>
+                <target>1.8</target>
+                <optimize>true</optimize>
+                <useIncrementalCompilation>false</useIncrementalCompilation>
+                <showWarnings>true</showWarnings>
+                <annotationProcessorPaths>
+                  <path>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava-beta-checker</artifactId>
+                    <version>1.0</version>
+                  </path>
+                </annotationProcessorPaths>
+                <compilerArgs>
+                    <arg>-Xmaxerrs</arg>
+                    <arg>1000000</arg>
+                    <arg>-Xlint</arg>
+                    <arg>-Xdiags:verbose</arg>
+                    <arg>-XepExcludedPaths:.*/target/generated-.*sources/.*</arg>
+                    <arg>-XepOpt:NullAway:AnnotatedPackages=com.theoryinpractise</arg>
+                    <arg>-XepOpt:NullAway:ExcludedFieldAnnotations=org.apache.maven.plugins.annotations.Component,org.apache.maven.plugins.annotations.Parameter</arg>
+                    <arg>-Xep:NullAway:ERROR</arg>
+                    <arg>-Xep:OptionalEquality:WARN</arg>
+                    <arg>-Xep:SelfComparison:ERROR</arg>
+                    <arg>-Xep:SelfEquals:ERROR</arg>
+                    <arg>-Xep:StringEquality:ERROR</arg>
+                    <arg>-Xep:EqualsHashCode:ERROR</arg>
+                    <arg>-Xep:EqualsIncompatibleType:ERROR</arg>
+                    <arg>-Xep:NonOverridingEquals:ERROR</arg>
+                    <arg>-Xep:NullableVoid:ERROR</arg>
+                    <arg>-Xep:NullablePrimitive:ERROR</arg>
+                    <arg>-Xep:NonOverridingEquals:ERROR</arg>
+                    <arg>-Xep:NullableConstructor:ERROR</arg>
+                    <arg>-Xep:MissingOverride:ERROR</arg>
+                    <arg>-Xep:DateFormatConstant:ERROR</arg>
+                    <arg>-Xep:StaticQualifiedUsingExpression:ERROR</arg>
+                    <arg>-Xep:RedundantThrows:ERROR</arg>
+                    <arg>-Xep:BetaApi:WARN</arg>
+                </compilerArgs>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>7.0</version>
+                        <!-- Use newer version of ASM -->
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
+                        <version>2.8.5</version>
+                    </dependency>
+                    <!-- override plexus-compiler-javac-errorprone's dependency on
+                        Error Prone with the latest version -->
+                    <dependency>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_core</artifactId>
+                        <version>2.3.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.uber.nullaway</groupId>
+                        <artifactId>nullaway</artifactId>
+                        <version>0.6.4</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
