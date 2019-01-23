@@ -124,7 +124,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
           Files.write(
               file.toPath(),
               formattedSource.getBytes(StandardCharsets.UTF_8),
-              StandardOpenOption.WRITE);
+              StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
           getLog().info(String.format("Reformatted file %s", file.getPath()));
         }
