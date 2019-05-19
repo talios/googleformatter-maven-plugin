@@ -13,7 +13,7 @@ original and only rewritten if they no longer match.
     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>googleformatter-maven-plugin</artifactId>
-      <version>1.6.4</version>
+      <version>1.7.2</version>
       <executions>
         <execution>
           <id>reformat-sources</id>
