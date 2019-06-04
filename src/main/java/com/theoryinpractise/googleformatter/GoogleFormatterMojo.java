@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
 
 import static com.google.googlejavaformat.java.JavaFormatterOptions.Style;
 import static com.theoryinpractise.googleformatter.Constants.DIRECTORY_MISSING;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 /** Reformat all source files using the Google Code Formatter */
 @Mojo(name = "format", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
@@ -81,6 +83,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(defaultValue = "false", property = "formatter.fixImports")
   protected boolean fixImports;
 
+  @Parameter(defaultValue = "100", property = "formatter.maxLineLength")
+  protected int maxLineLength;
+
   @Override
   public void execute() throws MojoExecutionException {
 
@@ -103,7 +108,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
       Set<File> sourceFilesToProcess =
           filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
 
-      JavaFormatterOptions options = JavaFormatterOptions.builder().style(style).build();
+      JavaFormatterOptions options = getJavaFormatterOptions();
 
       for (File file : sourceFilesToProcess) {
         String source =
@@ -116,8 +121,9 @@ public class GoogleFormatterMojo extends AbstractMojo {
                 ? formatter.formatSourceAndFixImports(source)
                 : formatter.formatSource(source);
 
-        HashCode sourceHash = Hashing.sha1().hashString(source, StandardCharsets.UTF_8);
-        HashCode formattedHash = Hashing.sha1().hashString(formattedSource, StandardCharsets.UTF_8);
+        HashCode sourceHash = Hashing.sha256().hashString(source, StandardCharsets.UTF_8);
+        HashCode formattedHash =
+            Hashing.sha256().hashString(formattedSource, StandardCharsets.UTF_8);
 
         if (!formattedHash.equals(sourceHash)) {
           // overwrite existing file
@@ -133,6 +139,12 @@ public class GoogleFormatterMojo extends AbstractMojo {
     } catch (Exception e) {
       throw new MojoExecutionException(e.getMessage());
     }
+  }
+
+  private JavaFormatterOptions getJavaFormatterOptions() {
+    JavaFormatterOptions options = spy(JavaFormatterOptions.builder().style(style).build());
+    doReturn(maxLineLength).when(options).maxLineLength();
+    return options;
   }
 
   private Set<File> filterUnchangedFiles(Set<File> originalFiles) throws MojoExecutionException {

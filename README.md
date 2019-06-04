@@ -13,7 +13,7 @@ original and only rewritten if they no longer match.
     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>googleformatter-maven-plugin</artifactId>
-      <version>1.7.2</version>
+      <version>1.7.3</version>
       <executions>
         <execution>
           <id>reformat-sources</id>
@@ -23,6 +23,7 @@ original and only rewritten if they no longer match.
             <filterModified>false</filterModified>
             <skip>false</skip>
             <fixImports>false</fixImports>
+            <maxLineLength>100</maxLineLength>
           </configuration>
           <goals>
             <goal>format</goal>
@@ -34,6 +35,8 @@ original and only rewritten if they no longer match.
 
 # Changes
 
+* 1.7.3 -Tue  4 Jun 2019 12:31:34 NZST
+  * Restored maxLineLenght and formatter.maxLineLength property
 * 1.0.6 - Tue 31 May 2016 10:51:16 NZST
   * Exposed `formatter.modified` to reformat only changed SCM files.
   * Requires Java 8 to run now.
