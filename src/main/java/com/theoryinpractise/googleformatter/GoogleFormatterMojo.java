@@ -46,8 +46,7 @@ import static org.mockito.Mockito.spy;
 @Mojo(name = "format", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class GoogleFormatterMojo extends AbstractMojo {
 
-  public static final SuffixMapping SOURCE_MAPPING =
-      new SuffixMapping(".java", new HashSet<>(Arrays.asList(".java", ".class")));
+  public static final SuffixMapping SOURCE_MAPPING = new SuffixMapping(".java", new HashSet<>(Arrays.asList(".java", ".class")));
   @Component ScmManager scmManager;
 
   @Parameter(required = true, readonly = true, property = "session")
@@ -105,33 +104,22 @@ public class GoogleFormatterMojo extends AbstractMojo {
       sourceFiles.addAll(findFilesToReformat(sourceDirectory, outputDirectory));
       sourceFiles.addAll(findFilesToReformat(testSourceDirectory, testOutputDirectory));
 
-      Set<File> sourceFilesToProcess =
-          filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
+      Set<File> sourceFilesToProcess = filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
 
       JavaFormatterOptions options = getJavaFormatterOptions();
 
       for (File file : sourceFilesToProcess) {
-        String source =
-            CharStreams.toString(
-                new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        String source = CharStreams.toString(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 
         Formatter formatter = new Formatter(options);
-        String formattedSource =
-            fixImports
-                ? formatter.formatSourceAndFixImports(source)
-                : formatter.formatSource(source);
+        String formattedSource = fixImports ? formatter.formatSourceAndFixImports(source) : formatter.formatSource(source);
 
         HashCode sourceHash = Hashing.sha256().hashString(source, StandardCharsets.UTF_8);
-        HashCode formattedHash =
-            Hashing.sha256().hashString(formattedSource, StandardCharsets.UTF_8);
+        HashCode formattedHash = Hashing.sha256().hashString(formattedSource, StandardCharsets.UTF_8);
 
         if (!formattedHash.equals(sourceHash)) {
           // overwrite existing file
-          Files.write(
-              file.toPath(),
-              formattedSource.getBytes(StandardCharsets.UTF_8),
-              StandardOpenOption.WRITE,
-              StandardOpenOption.TRUNCATE_EXISTING);
+          Files.write(file.toPath(), formattedSource.getBytes(StandardCharsets.UTF_8), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
           getLog().info(String.format("Reformatted file %s", file.getPath()));
         }
@@ -150,10 +138,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
   private Set<File> filterUnchangedFiles(Set<File> originalFiles) throws MojoExecutionException {
     MavenProject topLevelProject = session.getTopLevelProject();
     try {
-      String connectionUrl =
-          MoreObjects.firstNonNull(
-              topLevelProject.getScm().getConnection(),
-              topLevelProject.getScm().getDeveloperConnection());
+      String connectionUrl = MoreObjects.firstNonNull(topLevelProject.getScm().getConnection(), topLevelProject.getScm().getDeveloperConnection());
       ScmRepository repository = scmManager.makeScmRepository(connectionUrl);
       ScmFileSet scmFileSet = new ScmFileSet(topLevelProject.getBasedir());
       String basePath = topLevelProject.getBasedir().getAbsoluteFile().getPath();
@@ -162,30 +147,23 @@ public class GoogleFormatterMojo extends AbstractMojo {
               .map(f -> String.format("%s/%s", basePath, f.getPath()))
               .collect(Collectors.toList());
 
-      return originalFiles.stream()
-          .filter(f -> changedFiles.contains(f.getPath()))
-          .collect(Collectors.toSet());
+      return originalFiles.stream().filter(f -> changedFiles.contains(f.getPath())).collect(Collectors.toSet());
 
     } catch (ScmException e) {
       throw new MojoExecutionException(e.getMessage(), e);
     }
   }
 
-  private Set<File> findFilesToReformat(File sourceDirectory, File outputDirectory)
-      throws MojoExecutionException {
+  private Set<File> findFilesToReformat(File sourceDirectory, File outputDirectory) throws MojoExecutionException {
     if (sourceDirectory.exists()) {
       try {
         SourceInclusionScanner scanner = getSourceInclusionScanner(includeStale);
         scanner.addSourceMapping(SOURCE_MAPPING);
         Set<File> sourceFiles = scanner.getIncludedSources(sourceDirectory, outputDirectory);
-        getLog()
-            .info(
-                String.format(
-                    Constants.FOUND_UNCOMPILED, sourceFiles.size(), sourceDirectory.getPath()));
+        getLog().info(String.format(Constants.FOUND_UNCOMPILED, sourceFiles.size(), sourceDirectory.getPath()));
         return sourceFiles;
       } catch (InclusionScanException e) {
-        throw new MojoExecutionException(
-            String.format(Constants.ERROR_SCANNING_PATH, sourceDirectory.getPath()), e);
+        throw new MojoExecutionException(String.format(Constants.ERROR_SCANNING_PATH, sourceDirectory.getPath()), e);
       }
     } else {
       getLog().info(String.format(DIRECTORY_MISSING, sourceDirectory.getPath()));
@@ -194,8 +172,6 @@ public class GoogleFormatterMojo extends AbstractMojo {
   }
 
   protected SourceInclusionScanner getSourceInclusionScanner(boolean includeStale) {
-    return includeStale
-        ? new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.emptySet())
-        : new StaleSourceScanner(1024);
+    return includeStale ? new SimpleSourceInclusionScanner(Collections.singleton("**/*"), Collections.emptySet()) : new StaleSourceScanner(1024);
   }
 }
