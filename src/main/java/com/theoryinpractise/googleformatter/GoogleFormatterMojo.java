@@ -76,6 +76,12 @@ public class GoogleFormatterMojo extends AbstractMojo {
   @Parameter(defaultValue = "false", property = "formatter.skip")
   protected boolean skip;
 
+  @Parameter(defaultValue = "true", property = "formatter.main")
+  protected boolean formatMain;
+
+  @Parameter(defaultValue = "true", property = "formatter.test")
+  protected boolean formatTest;
+
   @Parameter(defaultValue = "false", property = "formatter.modified")
   protected boolean filterModified;
 
@@ -101,8 +107,12 @@ public class GoogleFormatterMojo extends AbstractMojo {
     try {
       Set<File> sourceFiles = new HashSet<>();
 
-      sourceFiles.addAll(findFilesToReformat(sourceDirectory, outputDirectory));
-      sourceFiles.addAll(findFilesToReformat(testSourceDirectory, testOutputDirectory));
+      if (formatMain) {
+        sourceFiles.addAll(findFilesToReformat(sourceDirectory, outputDirectory));
+      }
+      if (formatTest) {
+        sourceFiles.addAll(findFilesToReformat(testSourceDirectory, testOutputDirectory));
+      }
 
       Set<File> sourceFilesToProcess = filterModified ? filterUnchangedFiles(sourceFiles) : sourceFiles;
 

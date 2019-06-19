@@ -20,6 +20,8 @@ original and only rewritten if they no longer match.
           <configuration>
             <includeStale>false</includeStale>
             <style>GOOGLE</style>
+            <formatMain>true</formatMain>
+            <formatTest>true</formatTest>
             <filterModified>false</filterModified>
             <skip>false</skip>
             <fixImports>false</fixImports>
@@ -35,6 +37,8 @@ original and only rewritten if they no longer match.
 
 # Changes
 
+* 1.7.4 - Wed 19 Jun 2019 23:52:15 NZST
+  * Add formatMain / formatTest options*
 * 1.7.3 -Tue  4 Jun 2019 12:31:34 NZST
   * Restored maxLineLenght and formatter.maxLineLength property
 * 1.0.6 - Tue 31 May 2016 10:51:16 NZST
