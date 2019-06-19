@@ -4,7 +4,7 @@
 
     <groupId>com.theoryinpractise</groupId>
     <artifactId>googleformatter-maven-plugin</artifactId>
-    <version>1.7.4</version>
+    <version>1.7.5-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>googleformatter-maven-plugin Maven Mojo</name>
@@ -33,7 +33,7 @@
         <connection>scm:git:git@github.com:talios/googleformatter-maven-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:talios/googleformatter-maven-plugin.git</developerConnection>
         <url>https://github.com/talios/googleformatter-maven-plugin</url>
-        <tag>googleformatter-maven-plugin-1.7.4</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <repository>
