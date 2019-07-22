@@ -9,7 +9,7 @@ against their respective `.class` files existence/timestamp ).
 
 After processing each file, the contents `sha1` is compared against the
 original and only rewritten if they no longer match.
-
+```xml
     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>googleformatter-maven-plugin</artifactId>
@@ -34,7 +34,7 @@ original and only rewritten if they no longer match.
         </execution>
       </executions>
     </plugin>
-
+```
 # Changes
 
 * 1.7.4 - Wed 19 Jun 2019 23:52:15 NZST
