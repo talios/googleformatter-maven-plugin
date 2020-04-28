@@ -154,7 +154,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
       String basePath = topLevelProject.getBasedir().getAbsoluteFile().getPath();
       List<String> changedFiles =
           scmManager.status(repository, scmFileSet).getChangedFiles().stream()
-              .map(f -> String.format("%s/%s", basePath, f.getPath()))
+              .map(f -> new File(basePath, f.getPath()).toString())
               .collect(Collectors.toList());
 
       return originalFiles.stream().filter(f -> changedFiles.contains(f.getPath())).collect(Collectors.toSet());
