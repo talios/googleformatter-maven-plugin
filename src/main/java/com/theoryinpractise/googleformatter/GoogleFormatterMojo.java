@@ -135,7 +135,7 @@ public class GoogleFormatterMojo extends AbstractMojo {
         }
       }
     } catch (Exception e) {
-      throw new MojoExecutionException(e.getMessage());
+      throw new MojoExecutionException(e.getMessage(), e);
     }
   }
 
@@ -148,6 +148,11 @@ public class GoogleFormatterMojo extends AbstractMojo {
   private Set<File> filterUnchangedFiles(Set<File> originalFiles) throws MojoExecutionException {
     MavenProject topLevelProject = session.getTopLevelProject();
     try {
+      if (topLevelProject.getScm().getConnection() == null && topLevelProject.getScm().getDeveloperConnection() == null) {
+        throw new MojoExecutionException(
+            "You must supply at least one of scm.connection or scm.developerConnection in your POM file if you " +
+                "specify the filterModified or filter.modified option.");
+      }
       String connectionUrl = MoreObjects.firstNonNull(topLevelProject.getScm().getConnection(), topLevelProject.getScm().getDeveloperConnection());
       ScmRepository repository = scmManager.makeScmRepository(connectionUrl);
       ScmFileSet scmFileSet = new ScmFileSet(topLevelProject.getBasedir());
