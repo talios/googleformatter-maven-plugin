@@ -4,7 +4,7 @@ A simple [Apache Maven](http://maven.apache.org) plugin to reformat
 a projects source/test-sources using the [google-java-format](https://github.com/google/google-java-format)
 project to conform with the [Google Code Style Guide](https://google.github.io/styleguide/javaguide.html).
 
-By default the plugin will only process _stale_ source files ( comparing
+By default, the plugin will only process _stale_ source files ( comparing
 against their respective `.class` files existence/timestamp ).
 
 After processing each file, the contents `sha1` is compared against the
@@ -13,7 +13,7 @@ original and only rewritten if they no longer match.
     <plugin>
       <groupId>com.theoryinpractise</groupId>
       <artifactId>googleformatter-maven-plugin</artifactId>
-      <version>1.7.3</version>
+      <version>1.8.0</version>
       <executions>
         <execution>
           <id>reformat-sources</id>
@@ -35,8 +35,15 @@ original and only rewritten if they no longer match.
       </executions>
     </plugin>
 ```
+
+To fail build if formatting is needed
+
+```mvn com.theoryinpractise:googleformatter-maven-plugin:1.8.0:check```
+
 # Changes
 
+* 1.8.0 - Sun 30 Jul 2023 11:00:23 AEST
+  * Failing build if format is needed
 * 1.7.4 - Wed 19 Jun 2019 23:52:15 NZST
   * Add formatMain / formatTest options*
 * 1.7.3 -Tue  4 Jun 2019 12:31:34 NZST
